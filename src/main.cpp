@@ -1,33 +1,16 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "FlagParser.h"
 #include "Commands.h"
 #include "Errors.h"
 #include "Color.h"
 #include "Debug.h"
-//#include "StackVoid.h"
-#include "StackNorm.h"
+#include "Stack.h"
 
 //NOTE add assert info from previous function to next function?
 //TODO make checkValue for stack push
 //NOTE rename errors?
 //TODO commands array extern change, parser get command array as arg
-
-void print_int(const void* stack_elem)
-{
-    printf("%p \n", stack_elem);
-}
-
-void print_str(const void* stack_elem)
-{
-    printf("%s \n", (char*)stack_elem);
-}
-
-void* clone_str(const void* buf)
-{
-    return strdup((char*)buf);
-}
 
 int main(const int argc, const char** argv)
 {
@@ -41,7 +24,7 @@ int main(const int argc, const char** argv)
 
     Stack* stack = nullptr;
 
-    status = stackConstructor(&stack, 10);
+    status = stackConstructor(&stack, 1, print_char, NULL, NULL);
     checkStatus(status);
     debugPrintString("#2 Stack constructed \n");
 
@@ -49,33 +32,38 @@ int main(const int argc, const char** argv)
     checkStatus(status);
     debugPrintString("#3 Stack verified \n");
 
-    status = stackPush(stack, 3.1415);
-    status = stackPush(stack, 4.1415);
-    status = stackPush(stack, 5.1415);
-    status = stackPush(stack, 6.1415);
-    status = stackPush(stack, 7.1415);
-    status = stackPush(stack, 8.1415);
+    status = stackPush(stack, (const void*)'a');
+    status = stackPush(stack, (const void*)'b');
+    status = stackPush(stack, (const void*)'!');
+    status = stackPush(stack, (const void*)'(');
     checkStatus(status);
-    debugPrintString("#4 Pushed value \n");
-
-    status = stackPush(stack, 25.3);
-    checkStatus(status);
-    debugPrintString("#5 Pushed value \n");
+    debugPrintString("#4 Pushed values \n");
 
     cprintf(YELLOW, "Stack capacity: %zu\n", stackGetCapacity(stack));
 
-    elem_t temp = NULL;
+    void* temp = NULL;
     status = stackPop(stack, &temp);
     checkStatus(status);
-    debugPrintString("#6 Popped value \n");
+    debugPrintString("#5 Popped value \n");
 
-    cprintf(YELLOW, "Popped \"%" ELEM_T "\"\n", temp);
+    //cprintf(YELLOW, "Popped \"%c\"\n", (char)((uintptr_t) temp));
 
-    //TODO: add situations
+    void* peek = NULL;
+    status = stackPeek(stack, &peek);
+    checkStatus(status);
+    debugPrintString("#6 Peeked at stack \n");
+
+    status = stackFitToSize(stack);
+    checkStatus(status);
+    debugPrintString("#7 Stack fitted \n");
+
+    status = stackClear(stack);
+    checkStatus(status);
+    debugPrintString("#8 Stack cleared \n");
 
     status = stackDump(stack, status);
     checkStatus(status);
-    debugPrintString("#7 Called dump \n");
+    debugPrintString("#9 Called dump \n");
 
     status = stackDestructor(stack);
     checkStatus(status);

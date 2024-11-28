@@ -20,11 +20,11 @@ OBJDIR     := build/obj
 DEPDIR     := build/depends
 
 CPP := $(SRC)/main.cpp       \
-	   $(SRC)/StackNorm.cpp  \
+	   $(SRC)/Stack.cpp      \
 	   $(SRC)/FlagParser.cpp \
 	   $(SRC)/Commands.cpp   \
 	   $(SRC)/Errors.cpp     \
-	   $(SRC)/Color.cpp 
+	   $(SRC)/Color.cpp
 
 OBJ := $(CPP:$(SRC)/%.cpp=$(OBJDIR)/%.o)
 DEP := $(CPP:$(SRC)/%.cpp=$(DEPDIR)/%.d)

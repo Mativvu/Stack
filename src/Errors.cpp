@@ -59,6 +59,8 @@ char* describeError(Status status)
                                             "Err %d: Error, stack data was damaged. \n");
     printIfMatch(error_message, status, STACK_FIELD_DAMAGED,
                                             "Err %d: Error, stack fields were damaged. \n");
+    printIfMatch(error_message, status, NO_PRINT_FUNC_ERR,
+                                            "Err %d: Error, stack must have at least print function. \n");
     if (error_message == nullptr)
     {
         fprintf(stderr, "Unknown error \n");

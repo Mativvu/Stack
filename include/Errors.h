@@ -37,7 +37,8 @@ enum Status
     FILE_NAME_LEN_ERR    = 12,
     STACK_UNDERFLOW_ERR  = 13,
     STACK_DATA_DAMAGED   = 14,
-    STACK_FIELD_DAMAGED  = 15
+    STACK_FIELD_DAMAGED  = 15,
+    NO_PRINT_FUNC_ERR    = 16
 };
 
 bool isError(Status status);
