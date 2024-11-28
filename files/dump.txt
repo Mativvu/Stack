@@ -1,0 +1,19 @@
+Dump called with error:
+Err 0: Function DescribeError() called with OK status. 
+
+Stack address: 0x106f00b90 
+Stack capacity = 10 
+Stack size = 6 
+Stack left  canary: 0xBAD1ABA 
+Stack right canary: 0x5ADDA4 
+
+Stack data address: 0x107201da0 
+Stack data: 
+[5] 	 8.1415 
+[4] 	 7.1415 
+[3] 	 6.1415 
+[2] 	 5.1415 
+[1] 	 4.1415 
+[0] 	 3.1415 
+Data left  canary: 0xBAD1ABA 
+Data right canary: 0x5ADDA4 
