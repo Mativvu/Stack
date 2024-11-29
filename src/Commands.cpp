@@ -8,16 +8,17 @@
 
 Command commands_array[] =
 {
-    {HELP,    printCommands,     "--help",  "-h", "you already know, don`t you?)\n"},
-    {DEFAULT, setDefaultStreams, "--file",  "-f", "default working mode, extracts data from \"input.txt\""
-                                                  "and prints in \"output.txt\" \n"},
-    {INPUT,   setInputStream,    "--in",    "-i", "type \"filename\" after it to input from \"filename\","
-                                                  "file must exist in folder \"files/input\" \n"},
-    {OUTPUT,  setOutputStream,   "--out",   "-o", "type \"filename\" after it to output in \"filename\","
-                                                  "file must exist in folder \"files/output\" \n"},
-    {APPEND,  setAppendStream,   "--app",   "-a", "type \"filename\" after it to input from \"filename\""
-                                                  " and output in the end of it, file must exist in"
-                                                  "folder \"files/input\" \n"}
+    {HELP,     printCommands,      "--help",  "-h", "you already know, don`t you?)\n"},
+    {DEFAULT,  setDefaultStreams,  "--file",  "-f", "default working mode, extracts data from \"input.txt\" "
+                                                    "and prints in \"output.txt\" \n"},
+    {INPUT,    setInputStream,     "--in",    "-i", "type \"filename\" after it to input from \"filename\", "
+                                                    "file must exist in folder \"files/input\" \n"},
+    {OUTPUT,   setOutputStream,    "--out",   "-o", "type \"filename\" after it to output in \"filename\", "
+                                                    "file must exist in folder \"files/output\" \n"},
+    {APPEND,   setAppendStream,    "--app",   "-a", "type \"filename\" after it to input from \"filename\" "
+                                                    "and output in the end of it, file must exist in "
+                                                    "folder \"files/input\" \n"},
+    {TERMINAL, setTerminalStreams, "--term",  "-t", "serial input and output via terminal \n"}
 };
 size_t commands_array_size = sizeof(commands_array)/sizeof(commands_array[0]);
 
@@ -145,6 +146,29 @@ Status setDefaultStreams(const int argc, const char** argv, int* arg_index, Flag
     return OK;
 }
 
+Status setTerminalStreams(const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData)
+{
+    unused(argc);
+    unused(argv);
+    unused(arg_index);
+    myAssert(ParsedData  != nullptr);
+
+    Status status = OK;
+
+    FILE** stream_in  = &ParsedData->stream_in;
+    FILE** stream_out = &ParsedData->stream_out;
+
+    if (*stream_in != nullptr || *stream_out != nullptr)
+    {
+        return STREAM_REUSE_ERR;
+    }
+
+    *stream_in  = stdin;
+    *stream_out = stdout;
+
+    return OK;
+}
+
 Status printCommands(const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData)
 {
     unused(argc);
@@ -155,10 +179,10 @@ Status printCommands(const int argc, const char** argv, int* arg_index, FlagPars
     printf("\n");
     for (size_t i = 0; i < commands_array_size; i++)
     {
-        cprintf(CYAN, "%s ", commands_array[i].name);
-        cprintf(MAGENTA, "or ");
-        cprintf(CYAN, "%s ", commands_array[i].short_name);
-        cprintf(MAGENTA, "%s\n", commands_array[i].description);
+        colorPrint(CYAN, "%s ", commands_array[i].name);
+        colorPrint(MAGENTA, "or ");
+        colorPrint(CYAN, "%s ", commands_array[i].short_name);
+        colorPrint(MAGENTA, "%s\n", commands_array[i].description);
     }
     return HELP_FLAG;
 }
@@ -191,6 +215,9 @@ Status createFilePath(char** file_path, const char* dir, const char* file_name)
 
 const char* getNextArgument(const int argc, const char** argv, int* arg_index)
 {
+    myAssert(argv      != nullptr);
+    myAssert(arg_index != nullptr);
+
     if (*arg_index + 1 < argc)
     {
         (*arg_index)++;

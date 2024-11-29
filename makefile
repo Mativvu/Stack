@@ -21,6 +21,7 @@ DEPDIR     := build/depends
 
 CPP := $(SRC)/main.cpp       \
 	   $(SRC)/Stack.cpp      \
+	   $(SRC)/StackSim.cpp   \
 	   $(SRC)/FlagParser.cpp \
 	   $(SRC)/Commands.cpp   \
 	   $(SRC)/Errors.cpp     \

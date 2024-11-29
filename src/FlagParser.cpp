@@ -13,7 +13,7 @@ Status parseFlags(const int argc, const char** argv, int* modes_bitset,
     Status status = OK;
     if (argc == 1)
     {
-        cprintf(MAGENTA, "Type --help to see commands\n");
+        colorPrint(MAGENTA, "Type --help to see commands\n");
     }
     for (int arg_index = 1; arg_index < argc; arg_index++)
     {
@@ -37,7 +37,7 @@ Status parseFlags(const int argc, const char** argv, int* modes_bitset,
         }
         if (!found)
         {
-            cprintf(MAGENTA, "Found unknown argument: %s\n", argv[arg_index]);
+            colorPrint(MAGENTA, "Found unknown argument: %s\n", argv[arg_index]);
             return UNKNOWN_ARG_ERR;
         }
     }

@@ -1,0 +1,29 @@
+Set stack data type i 
+Called stack push 
+Pushed 1 
+Called stack push 
+Pushed 2 
+Called stack push 
+Pushed 3 
+Called stack push 
+Pushed 4 
+Called stack get size 
+Stack size is 4 
+Called stack get capacity 
+Stack capacity is 4 
+Called stack verify 
+Called stack peek 
+Peeked 4 
+Called stack clear 
+Called stack peek 
+Peeked 0 
+Called stack push 
+Pushed -218128 
+Called stack push 
+Pushed 12828 
+Called stack get capacity 
+Stack capacity is 4 
+Called stack fit to size 
+Called stack get capacity 
+Stack capacity is 2 
+Called stack dump 

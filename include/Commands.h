@@ -12,18 +12,16 @@ const char* const FILE_DIR = "files/";
 const char* const DEFAULT_INPUT_FILE_PATH  = "files/input.txt";
 const char* const DEFAULT_OUTPUT_FILE_PATH = "files/output.txt";
 
-#define unused(param) (void)(param);
-
-//TODO: change modes
+#define unused(param) while(0){ (void)(param); };
 
 enum Mode_bit
 {
-    DEFAULT = 0x00000001,
-    DEBUG   = 0x00000010,
-    HELP    = 0x00000100,
-    INPUT   = 0x00001000,
-    OUTPUT  = 0x00010000,
-    APPEND  = 0x00011000
+    HELP     = 0b00000001,
+    DEFAULT  = 0b00000010,
+    INPUT    = 0b00000100,
+    OUTPUT   = 0b00001000,
+    APPEND   = 0b00010000,
+    TERMINAL = 0b00100000
 };
 
 typedef struct FlagParseData
@@ -47,11 +45,12 @@ typedef struct Command
 extern Command commands_array[];
 extern size_t  commands_array_size;
 
-Status setDefaultStreams(const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
-Status setAppendStream  (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
-Status setOutputStream  (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
-Status setInputStream   (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
-Status printCommands    (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status setDefaultStreams (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status setAppendStream   (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status setOutputStream   (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status setInputStream    (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status setTerminalStreams(const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
+Status printCommands     (const int argc, const char** argv, int* arg_index, FlagParseData* ParsedData);
 
 const char* getNextArgument(const int argc, const char** argv, int* arg_index);
 

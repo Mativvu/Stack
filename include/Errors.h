@@ -8,9 +8,7 @@ const size_t MAX_ERROR_MESSAGE_LEN = 128;
 #define checkStatus(status)                                  \
     if (isError(status))                                     \
     {                                                        \
-        char* error_message = describeError(status);         \
-        fprintf(stderr, _RED "%s" _RESET, error_message);    \
-        free(error_message);                                 \
+        printErrorMessage(stderr, status);                   \
         return status;                                       \
     };
 
@@ -29,7 +27,7 @@ enum Status
     ARG_DUPLICATION_ERR  = 4,
     MEMORY_ALLOC_ERR     = 5,
     STREAM_REUSE_ERR     = 6,
-    CAPACITY_LIMIT_ERR   = 7,
+    CAPACITY_VALUE_ERR   = 7,
     STACK_OVERFLOW_ERR   = 8,
     POISON_VALUE_ERR     = 9,
     DUMP_FILE_ERR        = 10,
@@ -38,10 +36,15 @@ enum Status
     STACK_UNDERFLOW_ERR  = 13,
     STACK_DATA_DAMAGED   = 14,
     STACK_FIELD_DAMAGED  = 15,
-    NO_PRINT_FUNC_ERR    = 16
+    NO_PRINT_FUNC_ERR    = 16,
+    SIM_NUM_OF_ARGS_ERR  = 17,
+    SIM_UNKNOWN_ARG_ERR  = 18,
+    SIM_NO_ARGS_ERR      = 19,
+    SIM_STACK_TYPE_ERR   = 20,
+    SIM_NO_TYPE_ERR      = 21
 };
 
 bool isError(Status status);
-char* describeError(Status status);
+void printErrorMessage(FILE* stream, Status status);
 
 #endif //ERRORCODES_H

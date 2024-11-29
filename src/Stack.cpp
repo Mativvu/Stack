@@ -19,11 +19,17 @@ struct myStack
 
 Status stackConstructor(Stack** stack, size_t capacity, print_func print, clone_func clone, free_func free)
 {
+    myAssert(stack != nullptr);
+
     Status status = OK;
 
     if (print == nullptr)
     {
         return NO_PRINT_FUNC_ERR;
+    }
+    if (0 >= capacity || capacity > MAX_CAPACITY)
+    {
+        return CAPACITY_VALUE_ERR;
     }
 
     *stack = (Stack*)malloc(sizeof(Stack));
@@ -32,26 +38,22 @@ Status stackConstructor(Stack** stack, size_t capacity, print_func print, clone_
         return MEMORY_ALLOC_ERR;
     }
 
-    if (capacity > MAX_CAPACITY)
-    {
-        return CAPACITY_LIMIT_ERR;
-    }
     **stack = (Stack){CANARY_LEFT, nullptr, ZERO, capacity, print, clone, free, CANARY_RIGHT};
 
-    (*stack)->data = (void**)malloc((capacity + 2) * sizeof(void*));
+    (*stack)->data = (void**)calloc((capacity + 2), sizeof(void*));
     if ((*stack)->data == nullptr)
     {
         return MEMORY_ALLOC_ERR;
     }
 
-    ((ull*)(*stack)->data)[0]              = CANARY_LEFT;
+    ((ull*) (*stack)->data)[0]             = CANARY_LEFT;
     ((ull*)((*stack)->data + capacity))[1] = CANARY_RIGHT;
 
-    //NOTE
-    //cprintf(YELLOW, "Ctor left canary:  0x%llX \n", ((ull*)(*stack)->data)[0]);
-    //cprintf(YELLOW, "Ctor right canary: 0x%llX \n", ((ull*)((*stack)->data + capacity))[1]);
+    //NOTE debug print
+    //colorPrint(YELLOW, "Ctor left canary:  0x%llX \n", ((ull*)(*stack)->data)[0]);
+    //colorPrint(YELLOW, "Ctor right canary: 0x%llX \n", ((ull*)((*stack)->data + capacity))[1]);
 
-    status = stackVerify((*stack));
+    status = stackVerify(*stack);
     returnIfError(status);
 
     return OK;
@@ -59,11 +61,12 @@ Status stackConstructor(Stack** stack, size_t capacity, print_func print, clone_
 
 Status stackPop(Stack* stack, void** variable)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
-    myAssert(variable != nullptr);
+    myAssert(variable    != nullptr);
 
     Status status = OK;
+
     status = stackVerify(stack);
     returnIfError(status);
 
@@ -83,10 +86,11 @@ Status stackPop(Stack* stack, void** variable)
 
 Status stackPush(Stack* stack, const void* value)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     Status status = OK;
+
     status = stackVerify(stack);
     returnIfError(status);
 
@@ -107,7 +111,7 @@ Status stackPush(Stack* stack, const void* value)
 
 Status stackDump(Stack* stack, Status error)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     FILE* dump_stream = fopen(DUMP_FILE_PATH, "w");
@@ -116,14 +120,13 @@ Status stackDump(Stack* stack, Status error)
         return DUMP_FILE_ERR;
     }
 
-    char* error_message = describeError(error);
-    fprintf(dump_stream, "Dump called with error:\n%s", error_message);
+    fprintf(dump_stream, "Dump called with error: \n");
+    printErrorMessage(dump_stream, error);
     fprintf(dump_stream, "\n");
-    free(error_message);
 
-    fprintf(dump_stream, "Stack address: %p \n", stack);
-    fprintf(dump_stream, "Stack capacity = %zu \n", stack->capacity);
-    fprintf(dump_stream, "Stack size = %zu \n",     stack->size);
+    fprintf(dump_stream, "Stack address: %p \n",          stack);
+    fprintf(dump_stream, "Stack capacity = %zu \n",       stack->capacity);
+    fprintf(dump_stream, "Stack size = %zu \n",           stack->size);
     fprintf(dump_stream, "Stack left  canary: 0x%llX \n", stack->canary_left);
     fprintf(dump_stream, "Stack right canary: 0x%llX \n", stack->canary_right);
     fprintf(dump_stream, "\n");
@@ -148,7 +151,7 @@ Status stackDump(Stack* stack, Status error)
 
 Status stackDestructor(Stack* stack)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     for (size_t index = 0; index < stack->capacity + 2; ++index)
@@ -157,6 +160,7 @@ Status stackDestructor(Stack* stack)
         if (stack->free)
         {
             stack->free(stack->data[index]);
+            stack->data[index] = nullptr;
         }
     }
 
@@ -171,18 +175,22 @@ Status stackDestructor(Stack* stack)
 
 Status stackVerify(Stack* stack)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     Status status = OK;
 
-    if (stack->capacity > MAX_CAPACITY)
+    if (0 >= stack->capacity || stack->capacity > MAX_CAPACITY)
     {
-        status = CAPACITY_LIMIT_ERR;
+        status = CAPACITY_VALUE_ERR;
     }
     else if (stack->capacity < stack->size)
     {
         status = STACK_OVERFLOW_ERR;
+    }
+    else if (stack->size < ZERO)
+    {
+        status = STACK_UNDERFLOW_ERR;
     }
     else if (stack->capacity == POISON_SIZE_T || stack->size == POISON_SIZE_T)
     {
@@ -206,22 +214,24 @@ Status stackVerify(Stack* stack)
     return status;
 }
 
-Status stackResize(Stack* stack, size_t new_capacity)
+Status stackResize(Stack* stack, const size_t new_capacity)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     Status status = OK;
+
     status = stackVerify(stack);
     returnIfError(status);
 
-    cprintf(YELLOW, "Called resize \n");
+    //NOTE debug print
+    colorPrint(YELLOW, "Called resize \n");
 
     ((ull*)(stack->data + stack->capacity))[1] = ZERO;
 
     if (new_capacity >= MAX_CAPACITY)
     {
-        return CAPACITY_LIMIT_ERR;
+        return CAPACITY_VALUE_ERR;
     }
     else
     {
@@ -244,18 +254,22 @@ Status stackResize(Stack* stack, size_t new_capacity)
 
 Status stackPeek(Stack* stack, void** variable)
 {
-    myAssert(stack != nullptr);
+    myAssert(stack       != nullptr);
     myAssert(stack->data != nullptr);
 
     Status status = OK;
+
     status = stackVerify(stack);
     returnIfError(status);
 
-    if (stack->size <= ZERO)
+    if (stack->size == ZERO)
     {
-        return STACK_UNDERFLOW_ERR;
+        *variable = NULL;
     }
-    *variable = stack->data[stack->size];
+    else
+    {
+        *variable = stack->data[stack->size];
+    }
 
     status = stackVerify(stack);
     returnIfError(status);
@@ -296,10 +310,11 @@ Status stackClear(Stack* stack)
     myAssert(stack->data != nullptr);
 
     Status status = OK;
+
     status = stackVerify(stack);
     returnIfError(status);
 
-    for (size_t index = stack->capacity + 1; index > ZERO; index--)
+    for (size_t index = stack->capacity; index > ZERO; index--)
     {
         if (stack->free)
         {
@@ -307,6 +322,7 @@ Status stackClear(Stack* stack)
         }
         stack->data[index] = NULL;
     }
+    stack->size = ZERO;
 
     status = stackVerify(stack);
     returnIfError(status);

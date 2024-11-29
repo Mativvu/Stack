@@ -1,0 +1,19 @@
+type i
+push 1
+push 2
+push 3
+push 4
+size
+cap
+verify
+peek
+clear
+peek
+push -218128
+push 12828
+cap
+fit
+cap
+dump
+destroy
+

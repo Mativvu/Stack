@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#define __RED(str) _RED str _RESET
+
 const char* const RED    = "\x1b[31m";
 const char* const GREEN  = "\x1b[32m";
 const char* const YELLOW = "\x1b[33m";
@@ -17,6 +19,6 @@ const char* const RESET  = "\x1b[0m";
 #define _CYAN    "\x1b[36m"
 #define _RESET   "\x1b[0m"
 
-void cprintf(const char *color, const char *format, ...);
+void colorPrint(const char *color, const char *format, ...);
 
 #endif //COLOR_H

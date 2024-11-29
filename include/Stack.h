@@ -25,7 +25,7 @@ Status stackPush       (Stack* stack, const void* value);
 Status stackDump       (Stack* stack, Status error);
 Status stackDestructor (Stack* stack);
 Status stackVerify     (Stack* stack);
-Status stackResize     (Stack* stack, size_t new_size);
+Status stackResize     (Stack* stack, const size_t new_size);
 Status stackPeek       (Stack* stack, void** variable);
 Status stackFitToSize  (Stack* stack);
 Status stackClear      (Stack* stack);
