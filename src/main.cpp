@@ -9,13 +9,13 @@
 #include "StackSim.h"
 
 //NOTE add assert info from previous function to next function?
-//TODO make checkValue for stack push
 //NOTE rename errors?
 //TODO add hash protection
-//TODO add function to filter incoming values
-//TODO add function to transform incoming value before pushing in stack
-//TODO add stack simulation from file
 //TODO add error for not enough arguments for command
+//TODO change const 2 to const name (CANARY_NUM?)
+//TODO try to make constructor in sim
+//TODO solve problem with switch cases because of type id`s
+//TODO separate stack simulation from file and from terminal
 
 int main(const int argc, const char** argv)
 {
@@ -25,22 +25,24 @@ int main(const int argc, const char** argv)
     FlagParseData ParsedData = {};
     status = parseFlags(argc, argv, &modes_bitset, &ParsedData, commands_array, commands_array_size);
     checkStatus(status);
-    debugPrintString("#1 Initialization completed, files opened successfully \n");
+    debugPrint("#1 Initialization completed, files opened successfully \n");
 
     FILE* stream_in  = ParsedData.stream_in;
     FILE* stream_out = ParsedData.stream_out;
 
     Stack* stack = nullptr;
 
-    status = stackConstructor(&stack, 1, print_int, NULL, NULL);
+    /*
+    status = stackConstructor(&stack, 1, printInt, NULL, NULL);
     checkStatus(status);
-    debugPrintString("#2 Stack constructed \n");
+    debugPrint("#2 Stack constructed \n");
+    */
 
-    status = stackSimulation(stream_in, stream_out, stack);
+    status = stackSimulation(stream_in, stream_out, &stack);
     checkStatus(status);
-    debugPrintString("#3 Stack simulation ended successfully \n");
+    debugPrint("#3 Stack simulation ended successfully \n");
 
     status = stackDestructor(stack);
     checkStatus(status);
-    debugPrintString("#N Stack destroyed \n");
+    debugPrint("#N Stack destroyed \n");
 }

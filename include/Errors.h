@@ -31,17 +31,21 @@ enum Status
     STACK_OVERFLOW_ERR   = 8,
     POISON_VALUE_ERR     = 9,
     DUMP_FILE_ERR        = 10,
-    DUMPED               = 11,
-    FILE_NAME_LEN_ERR    = 12,
-    STACK_UNDERFLOW_ERR  = 13,
-    STACK_DATA_DAMAGED   = 14,
-    STACK_FIELD_DAMAGED  = 15,
-    NO_PRINT_FUNC_ERR    = 16,
-    SIM_NUM_OF_ARGS_ERR  = 17,
-    SIM_UNKNOWN_ARG_ERR  = 18,
-    SIM_NO_ARGS_ERR      = 19,
-    SIM_STACK_TYPE_ERR   = 20,
-    SIM_NO_TYPE_ERR      = 21
+    FILE_NAME_LEN_ERR    = 11,
+    STACK_UNDERFLOW_ERR  = 12,
+    STACK_DATA_DAMAGED   = 13,
+    STACK_FIELD_DAMAGED  = 14,
+    NO_PRINT_FUNC_ERR    = 15,
+    SIM_NUM_OF_ARGS_ERR  = 16,
+    SIM_UNKNOWN_ARG_ERR  = 17,
+    SIM_NO_ARGS_ERR      = 18,
+    SIM_STACK_TYPE_ERR   = 19,
+    SIM_NO_TYPE_ERR      = 20,
+    FILE_READ_ERR        = 21,
+    FILE_SIZE_ERR        = 22,
+    FILE_SEEK_ERR        = 23,
+    SIM_UNKNOWN_TYPE_ERR = 24,
+    SIM_WRONG_TYPE_ERR   = 25
 };
 
 bool isError(Status status);

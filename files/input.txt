@@ -1,4 +1,5 @@
 type i
+create
 push 1
 push 2
 push 3
@@ -14,6 +15,5 @@ push 12828
 cap
 fit
 cap
-dump
+verify
 destroy
-

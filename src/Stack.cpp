@@ -146,21 +146,23 @@ Status stackDump(Stack* stack, Status error)
     fprintf(dump_stream, "Data left  canary: 0x%llX \n", ((ull*)(stack->data))[0]);
     fprintf(dump_stream, "Data right canary: 0x%llX \n", ((ull*)(stack->data + stack->capacity))[1]);
 
-    return DUMPED;
+    return OK;
 }
 
 Status stackDestructor(Stack* stack)
 {
     myAssert(stack       != nullptr);
-    myAssert(stack->data != nullptr);
 
-    for (size_t index = 0; index < stack->capacity + 2; ++index)
+    if (stack->data != nullptr)
     {
-        stack->data[index] = NULL;
-        if (stack->free)
+        for (size_t index = 0; index < stack->capacity + 2; ++index)
         {
-            stack->free(stack->data[index]);
-            stack->data[index] = nullptr;
+            stack->data[index] = NULL;
+            if (stack->free)
+            {
+                stack->free(stack->data[index]);
+                stack->data[index] = nullptr;
+            }
         }
     }
 
@@ -344,27 +346,41 @@ size_t stackGetSize(Stack* stack)
     return stack->size;
 }
 
-void print_str(FILE* stream, const void* stack_elem)
+Status stackPrintElem(Stack* stack, const void* value, FILE* stream)
 {
-    fprintf(stream, "%s \n", (char*)stack_elem);
+    myAssert(stack != nullptr);
+
+    stack->print(stream, value);
+
+    return OK;
 }
 
-void print_int(FILE* stream, const void* stack_elem)
+void printStr(FILE* stream, const void* stack_elem)
 {
-    fprintf(stream, "%d \n", (int)((uintptr_t) stack_elem));
+    fprintf(stream, "%s", (char*)stack_elem);
 }
 
-void print_char(FILE* stream, const void* stack_elem)
+void printInt(FILE* stream, const void* stack_elem)
 {
-    fprintf(stream, "%c \n", (char)((uintptr_t) stack_elem));
+    fprintf(stream, "%d", (int)((uintptr_t) stack_elem));
 }
 
-void* clone_str(const void* buf)
+void printChar(FILE* stream, const void* stack_elem)
+{
+    fprintf(stream, "%c", (char)((uintptr_t) stack_elem));
+}
+
+void printLong(FILE* stream, const void* stack_elem)
+{
+    fprintf(stream, "%lld", (long long)((uintptr_t) stack_elem));
+}
+
+void* cloneStr(const void* buf)
 {
     return strdup((char*)buf);
 }
 
-void free_str(void* stack_elem)
+void freeStr(void* stack_elem)
 {
     free(stack_elem);
 }

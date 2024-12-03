@@ -40,8 +40,6 @@ void printErrorMessage(FILE* stream, Status status)
                                             "Err %d: Error, stack size or capacity is less then allowed. \n");
     printIfMatch(stream, status, DUMP_FILE_ERR,
                                             "Err %d: Error, couldn`t create dump file. \n");
-    printIfMatch(stream, status, DUMPED,
-                                            "Err %d: Stack was dumped, program ended. \n");
     printIfMatch(stream, status, FILE_NAME_LEN_ERR,
                                             "Err %d: Error, file name is too long (max 16 letters) or fail during "
                                             "creating file path. \n");
@@ -60,9 +58,19 @@ void printErrorMessage(FILE* stream, Status status)
     printIfMatch(stream, status, SIM_NO_ARGS_ERR,
                                             "Err %d: Error(sim), not enough arguments for stack command. \n");
     printIfMatch(stream, status, SIM_STACK_TYPE_ERR,
-                                            "Err %d: Error(sim), no such stack data type. \n");
+                                            "Err %d: Error(sim), wrong stack data type format. \n");
     printIfMatch(stream, status, SIM_NO_TYPE_ERR,
                                             "Err %d: Error(sim), stack data type was not set. \n");
+    printIfMatch(stream, status, FILE_READ_ERR,
+                                            "Err %d: Error, could not read all data from file. \n");
+    printIfMatch(stream, status, FILE_SIZE_ERR,
+                                            "Err %d: Error, file size is too big. \n");
+    printIfMatch(stream, status, FILE_SEEK_ERR,
+                                            "Err %d: Error, could not find file end. \n");
+    printIfMatch(stream, status, SIM_UNKNOWN_TYPE_ERR,
+                                            "Err %d: Error(sim), such stack data type is not supported. \n");
+    printIfMatch(stream, status, SIM_WRONG_TYPE_ERR,
+                                            "Err %d: Error(sim), value and stack data types do not match. \n");
     fprintf(stream, "Unknown error \n");
     return;
 }

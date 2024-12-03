@@ -2,6 +2,7 @@
 #define DEBUG_H
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 
 #include "Color.h"
@@ -10,8 +11,8 @@
 
 #ifdef DEBUG
 
-#define debugPrintString(str)         \
-    printf(_GREEN "%s" _RESET, str);
+#define debugPrint(fmt, ...)          \
+    printf(GREEN_(fmt), ## __VA_ARGS__);
 
 #define myAssert(expr)                                      \
     if(!(expr))                                             \
